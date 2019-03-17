@@ -25,7 +25,7 @@ public class GameController {
 	@GetMapping(path= "/api", produces= MediaType.APPLICATION_JSON_VALUE)
     public String list() { 
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.enable(SerializationFeature.WRAP_ROOT_VALUE);
+//		mapper.enable(SerializationFeature.WRAP_ROOT_VALUE);
 		try {
 			return mapper.writeValueAsString(returnGames.retornarJogos());
 		} catch (JsonProcessingException e) {

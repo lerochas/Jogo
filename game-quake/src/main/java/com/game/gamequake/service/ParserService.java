@@ -1,96 +1,78 @@
 package com.game.gamequake.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.game.gamequake.entity.Game;
 
-
+@Slf4j
 @Service
 public class ParserService {
 	
-	private static final String KILL = "Kill";
-    private static final String KILLED = "killed";
-    private static final String LINE_EMPTY     = "------------------------------------------------------------";
+	private static final String REGEX_JOGADOR = "(?s).*ClientUserinfoChanged.*";
+    private static final String REGEX_KILLED = "(?s).*killed.*";
+    private static final String REGEX_TRACO = "(?s).*--------";
+    private static final String REGEX_MORREU = "(?<=killed\\s)(.*?)(?=\\sby)";
+    private static final String REGEX_MATOU = "(?<=[0-9]:\\s)(.*?)(?=\\skilled)";
+    private static final String REGEX_EXTRAIR = "(?<=\\sn\\\\)(.*?)(?=\\\\t)";
 
-    public List<Game> getGame(final List<String> lines) {
-        List<Game> games = new ArrayList<>();
-        Game game = null;
-        for (String line: lines) {
-            if(LINE_EMPTY.equals(parserLineToGame(line))) {
-                if(game != null) {
-                    if(!game.getPhraseList().isEmpty()) {
-                        games.add(new Game("game_"+(games.size()+1), game.getPhraseList()));
-                    }
+    public Map<String, Game> parseGame(final List<String> lines) {
+        Map<String, Game> games = new HashMap<>();
+
+        int contador = 0;
+
+        int totalKills = 0;
+        HashSet<String> players= new HashSet<>();
+        Map<String, Integer> kills = new HashMap<>();
+
+        for (String linha: lines) {
+            if(validaLinha(REGEX_TRACO, linha)) {
+                if (!players.isEmpty()){
+                    contador++;
+                    log.info("jogo_{}: players {}, totalKills {}, kills {}", contador ,players, totalKills, kills);
+
+                    games.put("jogo_" + contador, new Game(totalKills, players, kills));
+
+                    totalKills = 0;
+                    players= new HashSet<>();
+                    kills = new HashMap<>();
+
                 }
-                game = new Game() ;
-                game.setPhraseList(new ArrayList<>());
+            } else if(validaLinha(REGEX_JOGADOR, linha)){
+                String player = extrairDado(REGEX_EXTRAIR, linha);
+                players.add(player);
+                kills.put(player, 0);
+//                log.info("jogo_{}: {}", contador, linha);
+            } else if(validaLinha(REGEX_KILLED, linha)){
+                totalKills++;
+                String matou = extrairDado(REGEX_MATOU, linha);
+
+                if ("<world>".equals(matou)){
+                    String morreu = extrairDado(REGEX_MORREU, linha);
+                    kills.put(morreu, kills.get(morreu) -1);
+                }else{
+                    kills.put(matou, kills.get(matou)+1);
+                }
+
+//                log.info("{} matou {}", extrairDado(REGEX_MATOU, linha), extrairDado(REGEX_MORREU, linha));
+
             }
-            try {
-                Game gamep = parserLineToGameP(line);
-                games.add(gamep);
-            } catch (Exception e) {
-                System.out.print(e.getMessage());            
-                }
         }
         return games;
     }
 
-    private Game parserLineToGameP(String line) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private String parserLineToGame(String line) {
-        String[] splitLine = line.split(":");
-
-        if(splitLine.length >= 2 && splitLine[1].contains(LINE_EMPTY)) {
-            return LINE_EMPTY;
-        }
-
-        return null;
+    private String extrairDado(String regexMorreu, String linha) {
+        Pattern pattern = Pattern.compile(regexMorreu);
+        Matcher matcher = pattern.matcher(linha);
+        return matcher.find()?matcher.group(1):null;
     }
 
-    private Game parserLineToPhrase(String line){
-        String[] splitLine = line.split(":");
-        final Game phrase = new Game();
-
-        if(Pattern.matches("(?s).*killed.*", line)){
-        	findPhrase(splitLine[3], phrase);
-            return phrase;
-        } else {
-            throw new UnprocessableLineException();
-        }
+    private boolean validaLinha(String lineEmpty, String linha) {
+        return Pattern.matches(lineEmpty, linha);
     }
-
-    private void findPlayer(final String line, final Game phrase) {
-        if(line.contains("<world>")) {
-            phrase.setAction("killed");
-            phrase.setWho("<world>");
-            phrase.setPlayer(line.substring(getBeginPlayerIndex(line, KILLED.length()), line.indexOf("by")).trim());
-        } else {
-            phrase.setAction("kill");
-            phrase.setWho(line.substring(getBeginPlayerIndex(line, KILLED.length()), line.indexOf("by")).trim());
-            phrase.setPlayer(line.substring(0, getBeginPlayerIndex(line, 0)).trim());
-        }
-    }
-
-    private void findPhrase(String line, Game phrase) {
-        findPlayer(line, phrase);
-        findMOD(line, phrase);
-    }
-
-    private void findMOD(final String line, final Game phrase) {
-        phrase.setCause(line.substring(line.indexOf("MOD")));
-    }
-
-    private int getBeginPlayerIndex(final String line, final int plus) {
-        return line.indexOf(KILLED)+plus;
-    }
-
 	
 }
