@@ -1,7 +1,6 @@
 package com.game.gamequake.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -43,27 +42,15 @@ public class Game implements Serializable{
 		this.kills = kills;
 	}
 	public String getPhraseList() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-	public void setPhraseList(ArrayList arrayList) {
-		// TODO Auto-generated method stub
-		
-	}
 	public void setAction(String string) {
-		// TODO Auto-generated method stub
-		
+
 	}
 	public void setWho(String string) {
-		// TODO Auto-generated method stub
-		
 	}
 	public void setPlayer(String trim) {
-		// TODO Auto-generated method stub
-		
 	}
 	public void setCause(String substring) {
-		// TODO Auto-generated method stub
-		
 	}
 }

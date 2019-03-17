@@ -46,7 +46,6 @@ public class ParserService {
                 String player = extrairDado(REGEX_EXTRAIR, linha);
                 players.add(player);
                 kills.put(player, 0);
-//                log.info("jogo_{}: {}", contador, linha);
             } else if(validaLinha(REGEX_KILLED, linha)){
                 totalKills++;
                 String matou = extrairDado(REGEX_MATOU, linha);
@@ -57,8 +56,6 @@ public class ParserService {
                 }else{
                     kills.put(matou, kills.get(matou)+1);
                 }
-
-//                log.info("{} matou {}", extrairDado(REGEX_MATOU, linha), extrairDado(REGEX_MORREU, linha));
 
             }
         }
