@@ -12,7 +12,7 @@ import com.game.gamequake.entity.Game;
 @Slf4j
 @Service
 public class ParserService {
-	
+
 	private static final String REGEX_JOGADOR = "(?s).*ClientUserinfoChanged.*";
     private static final String REGEX_KILLED = "(?s).*killed.*";
     private static final String REGEX_TRACO = "(?s).*--------";
@@ -22,25 +22,19 @@ public class ParserService {
 
     public Map<String, Game> parseGame(final List<String> lines) {
         Map<String, Game> games = new HashMap<>();
-
         int contador = 0;
-
         int totalKills = 0;
         HashSet<String> players= new HashSet<>();
         Map<String, Integer> kills = new HashMap<>();
-
         for (String linha: lines) {
             if(validaLinha(REGEX_TRACO, linha)) {
                 if (!players.isEmpty()){
                     contador++;
                     log.info("jogo_{}: players {}, totalKills {}, kills {}", contador ,players, totalKills, kills);
-
                     games.put("jogo_" + contador, new Game(totalKills, players, kills));
-
                     totalKills = 0;
                     players= new HashSet<>();
                     kills = new HashMap<>();
-
                 }
             } else if(validaLinha(REGEX_JOGADOR, linha)){
                 String player = extrairDado(REGEX_EXTRAIR, linha);
@@ -49,14 +43,12 @@ public class ParserService {
             } else if(validaLinha(REGEX_KILLED, linha)){
                 totalKills++;
                 String matou = extrairDado(REGEX_MATOU, linha);
-
                 if ("<world>".equals(matou)){
                     String morreu = extrairDado(REGEX_MORREU, linha);
                     kills.put(morreu, kills.get(morreu) -1);
                 }else{
                     kills.put(matou, kills.get(matou)+1);
                 }
-
             }
         }
         return games;
@@ -71,5 +63,4 @@ public class ParserService {
     private boolean validaLinha(String lineEmpty, String linha) {
         return Pattern.matches(lineEmpty, linha);
     }
-	
 }
