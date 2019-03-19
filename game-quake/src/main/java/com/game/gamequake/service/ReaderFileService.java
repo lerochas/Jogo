@@ -5,9 +5,12 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class ReaderFileService {
 
@@ -32,6 +35,7 @@ public class ReaderFileService {
 		}
 		catch(Exception e){
 			e.printStackTrace();
+			log.error("Erro ReaderFileService: ", e);
 			System.out.println("Erro ao ler o arquivo");
 		}
 		return listar;
