@@ -20,8 +20,8 @@ public class ReaderFileServiceTest {
 	
 	@Test
 	public void lerArquivo() {
-		ReflectionTestUtils.setField(readerFileService, "nomeArquivo", "viagem.log");
-		ReflectionTestUtils.setField(readerFileService, "caminhoArquivo", "C:\\Users\\Leandro Rocha\\Jogo\\");
+		ReflectionTestUtils.setField(readerFileService, "nomeArquivo", "games.log");
+		ReflectionTestUtils.setField(readerFileService, "caminhoArquivo", "C:\\Users\\Leandro Rocha\\Jogo\\game-quake\\");
 		
 		List<String> linhas= readerFileService.ler();
 		
