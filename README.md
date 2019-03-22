@@ -39,3 +39,18 @@ Para desligar
 ```
 docker-compose down
 ``` 
+
+## Gerando os relatórios
+
+Para gerar um relatório geral das partidas, use a URL:
+
+```
+http://localhost:8080/games
+```
+
+
+Para visualizar uma partida específica, utilize a URL:
+
+```
+http://localhost:8080/games/id
+```
