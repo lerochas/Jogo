@@ -1,7 +1,7 @@
 # Quake log parser 
 
 
-A aplicação tem como função de ler o arquivo games.log, agrupar os dados de cada jogo em um ranking geral, com informações de todas as partidas disputadas; como players que disputaram, o total de mortes ocorridas durante a partida e quem causou e sofreu a morte.
+A aplicação tem como função ler o arquivo games.log, agrupar os dados de cada jogo em um ranking geral, com informações de todas as partidas disputadas; como players que disputaram, o total de mortes ocorridas durante a partida e quem causou e sofreu a morte.
 
 ## Requisitos
 
