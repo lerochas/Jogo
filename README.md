@@ -29,15 +29,16 @@ mvn spring-boot:run
 
 ## Rodando a aplicação nos container
 
-Todos os recursos da aplicação podem ser executados com os seguintes comandos no docker-compose.yml;
+Todos os recursos da aplicação podem ser executados com os seguintes comandos maven e docker;
 
 ```
-docker-compose build && docker-compose up
+mvn package (criar a imagem)
+docker run -p 8080:8080 -t quake/parser:0.0.1-SNAPSHOT (rodar container)
 ```
 
 Para desligar
 ```
-docker-compose down
+ctrl + c
 ``` 
 
 ## Gerando os relatórios
